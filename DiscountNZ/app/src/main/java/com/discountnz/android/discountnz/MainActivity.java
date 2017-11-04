@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     List dateList = Arrays.asList("All Date", "Today", "Tomorrow", "This Week", "Next Week");
     List productList = new ArrayList<Product>();
     List allProductList = new ArrayList<Product>();
-    int showGridType = 1;//0:list table, 1: grid Table
+    int showGridType = 0;//0:list table, 1: grid Table
     RequestQueue queue = null; //request queue
     PolylineOptions polylineOptions = null;
     ImageHandler handler = new ImageHandler();
@@ -61,8 +62,12 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         Button viewButton = (Button) findViewById(R.id.viewButton);
 
         View.OnClickListener imageButtonListener = new View.OnClickListener(){
@@ -165,21 +170,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setListView(List<Product> productList, TableLayout listTable){
 
-        WindowManager wm = (WindowManager) this
-                .getSystemService(Context.WINDOW_SERVICE);
-        int width = wm.getDefaultDisplay().getWidth();
-
         for (int row = 0; row < productList.size(); row ++){
             final Product product = (Product) productList.get(row);
             LinearLayout lineLayout = tableManage.getListLineLayout(this, product);
-
-//            if(row % 2 == 0) {
-//                lineLayout.setBackgroundColor(Color.rgb(227, 227, 227));
-//            }else{
-//                lineLayout.setBackgroundColor(Color.rgb(255, 255, 255));
-//            }
-            lineLayout.setBackgroundColor(Color.rgb(255, 255, 255));
-
             lineLayout.setId(row);
             lineLayout.setOnClickListener(lineOnClickListener);
             listTable.addView(lineLayout);
@@ -202,18 +195,19 @@ public class MainActivity extends AppCompatActivity {
             }
             for(int i = 0; i < num; i++){
                 TableLayout tableLayout = tableManage.getGridTableLayout(this, product);
+                TableLayout.LayoutParams tableLayoutParams = (TableLayout.LayoutParams) tableLayout.getLayoutParams();
+                if(num == 1){
+                    tableLayoutParams.setMargins(0,0,0,1);
+                }else{
+                    tableLayoutParams.setMargins(0,0,1,1);
+                }
+                tableLayout.setLayoutParams(tableLayoutParams);
+                tableLayout.setBackgroundColor(Color.rgb(255,255,255));
                 lineLayout.addView(tableLayout);
                 lineLayout.setId(row);
                 lineLayout.setOnClickListener(lineOnClickListener);
                 row++;
             }
-//            if(countBGColor % 2 == 0) {
-//                lineLayout.setBackgroundColor(Color.rgb(227, 227, 227));
-//            }else{
-//                lineLayout.setBackgroundColor(Color.rgb(255, 255, 255));
-//            }
-            lineLayout.setBackgroundColor(Color.rgb(255, 255, 255));
-
             listTable.addView(lineLayout);
             countBGColor++;
         }

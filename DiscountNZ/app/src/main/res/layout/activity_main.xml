@@ -7,9 +7,18 @@
     tools:context="com.discountnz.android.discountnz.MainActivity">
 
     <Button
+        android:id="@+id/button2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="1dp"
+        android:background="@android:drawable/ic_search_category_default"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <Button
         android:id="@+id/viewButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginRight="1dp"
         android:background="@android:drawable/ic_dialog_dialer"
         app:layout_constraintRight_toRightOf="parent"
@@ -35,7 +44,6 @@
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginTop="1dp"
-                android:background="@color/colorPrimaryDark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -45,4 +53,5 @@
 
             </TableLayout>
     </ScrollView>
+
 </android.support.constraint.ConstraintLayout>

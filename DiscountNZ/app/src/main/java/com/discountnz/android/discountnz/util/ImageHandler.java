@@ -19,13 +19,6 @@ public class ImageHandler extends Handler {
         Map myMap = (Map) msg.obj;
         ImageView myImageView = (ImageView) myMap.get("imageView");
         Bitmap myBitMap = (Bitmap) myMap.get("bitMap");
-        int width = (int) myMap.get("width");
-        int height = (int) myMap.get("height");
         myImageView.setImageBitmap(myBitMap);
-        ViewGroup.LayoutParams imageViewparams = myImageView.getLayoutParams();
-        imageViewparams.width = width;
-        imageViewparams.height = height;
-        myImageView.setPadding(1,1,1,1);
-        myImageView.setLayoutParams(imageViewparams);
     }
 }
