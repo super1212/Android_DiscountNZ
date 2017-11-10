@@ -2,6 +2,9 @@ package com.discountnz.android.discountnz;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -52,6 +55,21 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    View.OnClickListener imageButtonListener = new View.OnClickListener(){
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onClick(View arg0) {
+            if(showGridType == 1){
+                showGridType = 0;
+                arg0.setBackground(getDrawable(R.drawable.list));
+            }else{
+                showGridType = 1;
+                arg0.setBackground(getDrawable(R.drawable.p4));
+            }
+            showGridData();
+        }
+
+    };
 
     //get requestQueue and keep the only one object in this class
     public RequestQueue getRequestQueue(Context context) {
@@ -68,20 +86,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+
         Button viewButton = (Button) findViewById(R.id.viewButton);
-
-        View.OnClickListener imageButtonListener = new View.OnClickListener(){
-            @Override
-            public void onClick(View arg0) {
-                if(showGridType == 1){
-                    showGridType = 0;
-                }else{
-                    showGridType = 1;
-                }
-                showGridData();
-            }
-
-        };
         viewButton.setOnClickListener(imageButtonListener);
         getProductsInfo();
 //        showGridData();
