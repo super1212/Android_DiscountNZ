@@ -15,6 +15,7 @@ public class Product {
     private String longitude;
     private String latitude;
     private String imgUrl;
+    private String desc;
 
     public String getBrand() {
         return brand;
@@ -56,6 +57,8 @@ public class Product {
         return startDate;
     }
 
+    public String getDesc() {return desc;}
+
     public void setAddr(String addr) {
         this.addr = addr;
     }
@@ -95,4 +98,7 @@ public class Product {
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
+
+    public void setDesc(String desc){this.desc = desc; }
+
 }

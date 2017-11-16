@@ -37,7 +37,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     List categoryList = new ArrayList<String>();
-    List brandList = new ArrayList<String>();
+    List providerList = new ArrayList<String>();
     List dateList = Arrays.asList("All Date", "Today", "Tomorrow", "This Week", "Next Week");
     List productList = new ArrayList<Product>();
     List allProductList = new ArrayList<Product>();
@@ -131,21 +131,21 @@ public class MainActivity extends AppCompatActivity {
                                 productItem.setName((String) myJson.get("name"));
                                 productItem.setPrice((String) myJson.get("price"));
                                 productItem.setStartDate((String) myJson.get("startDate"));
+                                productItem.setDesc((String) (myJson.get("desc")==null?"":myJson.get("desc")));
+
                                 productList.add(productItem);
                                 allProductList.add(productItem);
 
                                 if(!categoryList.contains((String) myJson.get("category"))){
                                     categoryList.add((String) myJson.get("category"));
                                 }
-                                if(!brandList.contains((String) myJson.get("brand"))){
-                                    brandList.add((String) myJson.get("brand"));
+                                if(!providerList.contains((String) myJson.get("brand"))){
+                                    providerList.add((String) myJson.get("brand"));
                                 }
                                 System.out.println(i);
                             }
-                            System.out.println("showGridData");
 
                             showGridData();
-                            System.out.println("showGridData######");
 
                         }
                     } catch (JSONException e) {
@@ -193,13 +193,13 @@ public class MainActivity extends AppCompatActivity {
         int width = wm.getDefaultDisplay().getWidth();
         int countBGColor = 0;
         for (int row = 0; row < productList.size();){
-            final Product product = (Product) productList.get(row);
             LinearLayout lineLayout = new LinearLayout(this);
             int num = 1;
             if(row + 1 < productList.size()){
                 num++;
             }
             for(int i = 0; i < num; i++){
+                final Product product = (Product) productList.get(row);
                 TableLayout tableLayout = tableManage.getGridTableLayout(this, product);
                 TableLayout.LayoutParams tableLayoutParams = (TableLayout.LayoutParams) tableLayout.getLayoutParams();
                 if(num == 1){
