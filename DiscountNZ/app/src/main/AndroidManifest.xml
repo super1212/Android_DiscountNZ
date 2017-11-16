@@ -29,6 +29,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
+=======
+        <activity android:name=".ProductDetailsDisplay.InfoPage" />
+
+>>>>>>> Eric
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -41,6 +46,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+<<<<<<< HEAD
+=======
+        <activity
+            android:name=".ProductAddressPage"
+            android:label="@string/title_activity_product_address_page"></activity>
+>>>>>>> Eric
     </application>
 
 </manifest>
