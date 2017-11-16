@@ -1,19 +1,28 @@
 package com.discountnz.android.discountnz;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,7 +44,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
     List categoryList = new ArrayList<String>();
     List brandList = new ArrayList<String>();
     List dateList = Arrays.asList("All Date", "Today", "Tomorrow", "This Week", "Next Week");
@@ -46,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     PolylineOptions polylineOptions = null;
     ImageHandler handler = new ImageHandler();
     TableManage tableManage = new TableManage();
+
+
 
     View.OnClickListener lineOnClickListener = new View.OnClickListener(){
         @Override
@@ -92,9 +104,48 @@ public class MainActivity extends AppCompatActivity {
         getProductsInfo();
 //        showGridData();
 
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
 
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_about) {
+            // Handle the camera action
+        } else if (id == R.id.nav_about) {
+
+        } else if (id == R.id.nav_map) {
+
+        } else if (id == R.id.nav_setting) {
+            Toast.makeText(this, "setting", Toast.LENGTH_SHORT).show();
+            FilterFragment filterFragment = new FilterFragment();
+            android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
     /**
      * Get the products information from my online json
@@ -218,4 +269,5 @@ public class MainActivity extends AppCompatActivity {
             countBGColor++;
         }
     }
+
 }
