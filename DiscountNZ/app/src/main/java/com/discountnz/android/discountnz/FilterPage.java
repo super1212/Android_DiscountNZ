@@ -3,6 +3,7 @@ package com.discountnz.android.discountnz;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class FilterPage extends AppCompatActivity {
     private String sBrand;
     private String sCategory;
     private String sDate;
+    private Boolean isFilter = false;
 
     ImageHandler handler = new ImageHandler();
     @Override
@@ -40,13 +42,21 @@ public class FilterPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_page);
 
+        // use the intent, get the Lists
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("categoryBundle");
-//        Bundle args2 = intent.getBundleExtra("brandBundle");
         List categoryList = (ArrayList<String>)args.getSerializable("category");
         List brandList = (ArrayList<String>)args.getSerializable("brand");
         List dateList = (ArrayList<String>)args.getSerializable("date");
 
+        setTitle("Filter Settings");
+
+        // get the padding value from dp to pixel
+        int padding_in_dp = 72;
+        int padding_in_dp_right = 16;
+        final float scale = getResources().getDisplayMetrics().density;
+        int padding_in_px = (int) (padding_in_dp * scale + 0.5f);
+        int padding_in_px_right = (int) (padding_in_dp * scale + 0.5f);
 
         final Button btnBack = (Button)findViewById(R.id.btnBack);
         final Button btnConfirm = (Button)findViewById(R.id.btnConfirm);
@@ -57,61 +67,45 @@ public class FilterPage extends AppCompatActivity {
         final ListView brandListView = (ListView)findViewById(R.id.brandListView);
         final ListView dateListView = (ListView)findViewById(R.id.dateListView);
 
+        // populate the brandListView
         String[] brandItems = new String[brandList.size()];
         for (int i = 0; i < brandList.size(); i++) {
             brandItems[i] = brandList.get(i).toString();
         }
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, brandItems);
         brandListView.setAdapter(adapter);
-        brandListView.setPadding(72, 0, 0, 0);
+        brandListView.setPadding(padding_in_px, 0, padding_in_px_right, 0);
         justifyListViewHeightBasedOnChildren(brandListView);
 
-
+        // populate the categoryListView
         String[] categoryItems = new String[categoryList.size()];
         for (int i = 0; i < categoryList.size(); i++) {
             categoryItems[i] = categoryList.get(i).toString();
         }
         ArrayAdapter adapterCat = new ArrayAdapter(this, android.R.layout.simple_list_item_1, categoryItems);
         categoryListView.setAdapter(adapterCat);
-        categoryListView.setPadding(72, 0, 0, 0);
+        categoryListView.setPadding(padding_in_px, 0, padding_in_px_right, 0);
         justifyListViewHeightBasedOnChildren(categoryListView);
 
+        // populate the dateListView
         String[] dateItems = new String[dateList.size()];
         for (int i = 0; i < dateList.size(); i++) {
             dateItems[i] = dateList.get(i).toString();
         }
         ArrayAdapter adapterDate = new ArrayAdapter(this, android.R.layout.simple_list_item_1, dateItems);
         dateListView.setAdapter(adapterDate);
-        dateListView.setPadding(72, 0, 0, 0);
+        dateListView.setPadding(padding_in_px, 0, padding_in_px_right, 0);
         justifyListViewHeightBasedOnChildren(dateListView);
-
-//        final ImageView productImage = (ImageView)findViewById(R.id.productImage);
-//        final ImageButton btnLocation = (ImageButton)findViewById(R.id.btnLocation);
-//        final Product thisProduct = (Product)getIntent().getSerializableExtra("product");
-//
-//        txtName.setText("Name: " + thisProduct.getName());
-//        txtBrand.setText("Brand: " + thisProduct.getBrand());
-//        txtAddress.setText("Address: " + thisProduct.getAddr());
-//        txtPrice.setText("Price: " + thisProduct.getPrice());
-
-//        new Thread(new Runnable(){
-//            @Override
-//            public void run() {
-//                Message msg = handler.obtainMessage();
-//                Map<String, Object> map = new HashMap();
-//                map.put("imageView", productImage);
-//                map.put("bitMap", returnBitMap(thisProduct.getImgUrl()));
-//                msg.obj = map;
-//                msg.sendToTarget();
-//            }
-//        }).start();
-
 
         brandListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 sBrand = (String) adapterView.getItemAtPosition(i);
-                txtBrand.setText("Brand - " + adapterView.getItemAtPosition(i));
+                for (int j = 0; j < adapterView.getChildCount(); j++)
+                    adapterView.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
+                // change the background color of the selected element
+                view.setBackgroundColor(Color.LTGRAY);
+                isFilter = true;
             }
         });
 
@@ -119,7 +113,11 @@ public class FilterPage extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 sDate = (String) adapterView.getItemAtPosition(i);
-                txtDate.setText("Date - " + adapterView.getItemAtPosition(i));
+                for (int j = 0; j < adapterView.getChildCount(); j++)
+                    adapterView.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
+                // change the background color of the selected element
+                view.setBackgroundColor(Color.LTGRAY);
+                isFilter = true;
             }
         });
 
@@ -127,7 +125,11 @@ public class FilterPage extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 sCategory = (String) adapterView.getItemAtPosition(i);
-                txtCategory.setText("Category - " + adapterView.getItemAtPosition(i));
+                for (int j = 0; j < adapterView.getChildCount(); j++)
+                    adapterView.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
+                // change the background color of the selected element
+                view.setBackgroundColor(Color.LTGRAY);
+                isFilter = true;
             }
         });
 
@@ -140,6 +142,7 @@ public class FilterPage extends AppCompatActivity {
             }
         });
 
+        // setup the on click listener, return the filter settings
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,44 +150,14 @@ public class FilterPage extends AppCompatActivity {
                 filterIntent.putExtra("category", sCategory);
                 filterIntent.putExtra("brand", sBrand);
                 filterIntent.putExtra("date", sDate);
+                filterIntent.putExtra("isFilter", isFilter);
                 startActivityForResult(filterIntent,100);
             }
         });
 
-//        btnLocation.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                Intent viewLocation = new Intent(InfoPage.this, ProductAddressPage.class);
-////                viewLocation.putExtra("longitude", thisProduct.getLongitude());
-////                viewLocation.putExtra("latitude", thisProduct.getLatitude());
-////                viewLocation.putExtra("name", thisProduct.getName());
-////                startActivityForResult(viewLocation,101);
-//            }
-//        });
     }
 
-//    public Bitmap returnBitMap(String url){
-//        URL myFileUrl = null;
-//        Bitmap bitmap = null;
-//        try {
-//            myFileUrl = new URL(url);
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            HttpURLConnection conn = (HttpURLConnection) myFileUrl
-//                    .openConnection();
-//            conn.setDoInput(true);
-//            conn.connect();
-//            InputStream is = conn.getInputStream();
-//            bitmap = BitmapFactory.decodeStream(is);
-//            is.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return bitmap;
-//    }
-
+    // set the height of the listview
     public void justifyListViewHeightBasedOnChildren (ListView listView) {
 
         ListAdapter adapter = listView.getAdapter();
