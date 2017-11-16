@@ -1,6 +1,7 @@
 package com.discountnz.android.discountnz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -26,6 +27,7 @@ import com.discountnz.android.discountnz.model.Product;
 import com.discountnz.android.discountnz.util.ImageHandler;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import org.json.JSONArray;
@@ -71,6 +73,21 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
+    View.OnClickListener filterButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View arg0) {
+            Intent filter = new Intent(MainActivity.this, FilterPage.class);
+            Bundle cat = new Bundle();
+            cat.putSerializable("category", (Serializable) categoryList);
+            cat.putSerializable("brand", (Serializable) brandList);
+            cat.putSerializable("date", (Serializable) dateList);
+            filter.putExtra("categoryBundle", cat);
+            filter.putExtra("brandBundle", cat);
+            filter.putExtra("dateBundle", cat);
+            startActivityForResult(filter,100);
+        }
+    };
+
     //get requestQueue and keep the only one object in this class
     public RequestQueue getRequestQueue(Context context) {
         if (queue == null) {
@@ -92,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
         getProductsInfo();
 //        showGridData();
 
+
+        Button filterButton = (Button) findViewById(R.id.button2);
+        filterButton.setOnClickListener(filterButtonListener);
     }
 
 
