@@ -25,7 +25,11 @@ import com.discountnz.android.discountnz.model.Product;
 import com.discountnz.android.discountnz.util.ImageHandler;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,13 +37,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static android.R.attr.end;
+import static android.R.attr.value;
+
 
 public class MainActivity extends AppCompatActivity {
     List categoryList = new ArrayList<String>();
     List providerList = new ArrayList<String>();
-    List dateList = Arrays.asList("All Date", "Today", "Tomorrow", "This Week", "Next Week");
-    List productList = new ArrayList<Product>();
-    List allProductList = new ArrayList<Product>();
+    List dateList = Arrays.asList("Today", "Tomorrow", "This Week", "Next Week");
+    List<Product> productList = new ArrayList<Product>();
+    List<Product> allProductList = new ArrayList<Product>();
     int showGridType = 0;//0:list table, 1: grid Table
     RequestQueue queue = null; //request queue
     PolylineOptions polylineOptions = null;
@@ -80,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return queue;
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -88,15 +96,69 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        Intent intent = getIntent();
+        String category = intent.getStringExtra("category");
+        String brand = intent.getStringExtra("brand");
+        String dateStr = intent.getStringExtra("date");
+        boolean isFilter = intent.getBooleanExtra("isFilter", false);
+
 
         Button viewButton = (Button) findViewById(R.id.viewButton);
         viewButton.setOnClickListener(imageButtonListener);
-        getProductsInfo();
+        //check is it from filter page go back
+        if(isFilter){
+            doFilter(category, brand, dateStr);
+            showGridData();
+        }else{
+            getProductsInfo();
+        }
 //        showGridData();
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void doFilter(String category, String brand, String dateStr){
+        productList = new ArrayList<Product>();
+        for(Product proItem : allProductList){
+            if(!category.isEmpty() && !proItem.getCategory().equals(category)){
+                continue;
+            }
+            if(!brand.isEmpty() && !proItem.getBrand().equals(brand)){
+                continue;
+            }
+            LocalDate todayDate = LocalDate.now();
+            DateTimeFormatter myFormatter = DateTimeFormatter.ofPattern("YYYY-MM-DD");
+            LocalDate startDate = LocalDate.parse(proItem.getStartDate(), myFormatter);
+            LocalDate endDate = LocalDate.parse(proItem.getEndDate(), myFormatter);
 
+            if("Today".equals(dateStr)){
+                if(todayDate.isAfter(startDate) || todayDate.isBefore(endDate)){
+                    continue;
+                }
+            }
+
+            if("Tomorrow".equals(dateStr)){
+                if(todayDate.plusDays(1).isAfter(startDate) || todayDate.plusDays(1).isBefore(endDate)){
+                    continue;
+                }
+            }
+            if("This Week".equals(dateStr)){
+                LocalDate lastday = todayDate.plusDays(7);
+                if(todayDate.isAfter(endDate)|| lastday.isBefore(startDate)){
+                    continue;
+                }
+            }
+
+            if("Next Week".equals(dateStr)){
+                LocalDate fromDate = todayDate.plusDays(7);
+                LocalDate lastday = todayDate.plusDays(14);
+                if(fromDate.isAfter(endDate)|| lastday.isBefore(startDate)){
+                    continue;
+                }
+            }
+            productList.add(proItem);
+        }
+    }
 
     /**
      * Get the products information from my online json
@@ -107,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         //get the request queue
         queue = getRequestQueue(getApplicationContext());
         //current response url
-        String url = "https://gist.githubusercontent.com/super1212/d0a3131282534ebe60b581b8a7f7be1f/raw/products.json";
+        String url = "https://gist.githubusercontent.com/super1212/82fe7cdbd3c4286c5bb5e98c7ee07c73/raw/products_Android.json";
         //use get method to get the json result
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
             (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {

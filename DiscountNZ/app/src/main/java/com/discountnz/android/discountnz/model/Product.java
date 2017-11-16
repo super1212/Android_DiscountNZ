@@ -104,4 +104,18 @@ public class Product implements Serializable{
 
     public void setDesc(String desc){this.desc = desc; }
 
+    public String getDescAndOther(){
+        return " " + getDesc() + "\n" +
+                " From: " + getStartDate() +
+                " To: " + getEndDate();
+    }
+
+    public String getDetails(){
+        return " " + getBrand()+", " +
+                getCategory()+", " +
+                getName()+", " +
+                getPrice();
+    }
 }
+
+

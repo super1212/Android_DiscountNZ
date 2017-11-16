@@ -70,13 +70,13 @@ public class TableManage {
         LinearLayout subLinearLayout1 = new LinearLayout(context);
         AutoSplitTextView textView1 = new AutoSplitTextView(context);
         textView1.setLayoutParams(new ViewGroup.LayoutParams(width/2, 400));
-        textView1.setText(product.getAddr()+" "+product.getStartDate()+" "+product.getEndDate());
+        textView1.setText(product.getDescAndOther());
         subLinearLayout1.addView(textView1);
 
         LinearLayout subLinearLayout2 = new LinearLayout(context);
         AutoSplitTextView textView2 = new AutoSplitTextView(context);
         textView2.setLayoutParams(new ViewGroup.LayoutParams(width/2, 200));
-        textView2.setText(product.getBrand()+" "+product.getCategory()+" "+product.getName());
+        textView2.setText(product.getDetails());
         textView2.setTextColor(Color.BLUE);
         subLinearLayout2.addView(textView2);
 
@@ -125,7 +125,7 @@ public class TableManage {
 
         AutoSplitTextView textView1 = new AutoSplitTextView(context);
         textView1.setLayoutParams(new ViewGroup.LayoutParams(width - 400, 300));
-        textView1.setText(product.getAddr()+" "+product.getStartDate()+" "+product.getEndDate());
+        textView1.setText(product.getDescAndOther());
         subLinearLayout1.addView(textView1);
 
         LinearLayout subLinearLayout2 = new LinearLayout(context);
@@ -133,7 +133,7 @@ public class TableManage {
 //                    width - 400, 100));
         AutoSplitTextView textView2 = new AutoSplitTextView(context);
         textView2.setLayoutParams(new ViewGroup.LayoutParams(width - 400, 100));
-        textView2.setText(product.getBrand()+" "+product.getCategory()+" "+product.getName());
+        textView2.setText(product.getDetails());
         textView2.setTextColor(Color.BLUE);
         subLinearLayout2.addView(textView2);
 
