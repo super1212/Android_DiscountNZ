@@ -1,17 +1,15 @@
 package com.discountnz.android.discountnz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
@@ -26,13 +24,13 @@ import com.discountnz.android.discountnz.model.Product;
 import com.discountnz.android.discountnz.util.ImageHandler;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.Arrays;
-import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -86,12 +84,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        //initial map button
+        initMapButton();
+
+
+
+
 
         Button viewButton = (Button) findViewById(R.id.viewButton);
         viewButton.setOnClickListener(imageButtonListener);
         getProductsInfo();
 //        showGridData();
 
+    }
+
+    public void initMapButton(){
+        Button mapButton = (Button)findViewById(R.id.button3);
+        mapButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent map = new Intent(MainActivity.this, com.discountnz.android.discountnz.manage.map.class);
+
+                startActivity(map);
+
+            }
+        });
     }
 
 

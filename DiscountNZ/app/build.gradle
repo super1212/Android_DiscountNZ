@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.discountnz.android.discountnz"
         minSdkVersion 15
@@ -30,5 +30,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:11.0.0'
     compile 'com.google.android.gms:play-services-maps:11.0.0'
     compile 'com.android.volley:volley:1.0.0'
+    compile 'com.android.support:support-v4:26.+'
     testCompile 'junit:junit:4.12'
 }
