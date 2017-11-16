@@ -1,10 +1,12 @@
 package com.discountnz.android.discountnz.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Youfa on 26/10/17.
  */
 
-public class Product {
+public class Product implements Serializable{
     private String name;
     private String price;
     private String brand;
@@ -15,6 +17,7 @@ public class Product {
     private String longitude;
     private String latitude;
     private String imgUrl;
+
 
     public String getBrand() {
         return brand;

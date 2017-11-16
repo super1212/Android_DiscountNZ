@@ -1,17 +1,15 @@
 package com.discountnz.android.discountnz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
@@ -21,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.discountnz.android.discountnz.ProductDetailsDisplay.InfoPage;
 import com.discountnz.android.discountnz.manage.TableManage;
 import com.discountnz.android.discountnz.model.Product;
 import com.discountnz.android.discountnz.util.ImageHandler;
@@ -52,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View arg0) {
             int index = arg0.getId();
             Product currentProduct = (Product) productList.get(index);
+            Intent info = new Intent(MainActivity.this, InfoPage.class);
+            info.putExtra("product", currentProduct);
+            startActivityForResult(info,100);
         }
     };
 
