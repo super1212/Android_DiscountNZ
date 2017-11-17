@@ -308,23 +308,33 @@ public class MainActivity extends AppCompatActivity {
         int countBGColor = 0;
         for (int row = 0; row < productList.size();){
             LinearLayout lineLayout = new LinearLayout(this);
-            int num = 1;
-            if(row + 1 < productList.size()){
-                num++;
-            }
+            int num = 2;
+
             for(int i = 0; i < num; i++){
-                final Product product = (Product) productList.get(row);
-                TableLayout tableLayout = tableManage.getGridTableLayout(this, product);
-                TableLayout.LayoutParams tableLayoutParams = (TableLayout.LayoutParams) tableLayout.getLayoutParams();
-                if(num == 1){
-                    tableLayoutParams.setMargins(0,0,0,1);
+                TableLayout tableLayout;
+                if(row < productList.size()){
+                    final Product product = (Product) productList.get(row);
+                    tableLayout = tableManage.getGridTableLayout(this, product);
+                    tableLayout.setId(row);
+                    tableLayout.setOnClickListener(lineOnClickListener);
                 }else{
-                    tableLayoutParams.setMargins(0,0,1,1);
+                    tableLayout = new TableLayout(getApplicationContext());
+                    TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
+                            (width/2-2), width/2);
+                    tableLayoutParams.width = width/2;
+                    tableLayoutParams.height = width/2 + 700;
+                    tableLayout.setLayoutParams(tableLayoutParams);
                 }
-                tableLayout.setLayoutParams(tableLayoutParams);
+                TableLayout.LayoutParams tableLayoutParams = (TableLayout.LayoutParams) tableLayout.getLayoutParams();
+                if(tableLayoutParams != null){
+                    if(num == 1){
+                        tableLayoutParams.setMargins(0,0,0,1);
+                    }else{
+                        tableLayoutParams.setMargins(0,0,1,1);
+                    }
+                    tableLayout.setLayoutParams(tableLayoutParams);
+                }
                 tableLayout.setBackgroundColor(Color.rgb(255,255,255));
-                tableLayout.setId(row);
-                tableLayout.setOnClickListener(lineOnClickListener);
 
                 lineLayout.addView(tableLayout);
                 row++;
