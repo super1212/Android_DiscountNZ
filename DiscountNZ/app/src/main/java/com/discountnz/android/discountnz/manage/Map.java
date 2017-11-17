@@ -170,10 +170,6 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
 
     @Override
     public void onLocationChanged(Location location) {
-
-
-        System.out.println("report");
-
         if(location != null){
 
             ll = new LatLng(location.getLatitude(),location.getLongitude());
@@ -192,7 +188,6 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
     public void showShops(){
         mMap.clear();
 
-
 //        for(int i = 0; i < productList.size();i++){
 //            LatLng shopLocation = new LatLng((Product)productList[i].getLatitude,);
 //        }
@@ -203,12 +198,11 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
         for(Product pro : productList){
 
             LatLng shopLocation = new LatLng(Double.parseDouble(pro.getLatitude()),Double.parseDouble(pro.getLongitude()));
-            System.out.println(shopLocation);
-            if(CalculationByDistance(shopLocation,ll) < distance){
-                i++;
-
-                System.out.println(i);
-                setMarker(pro.getBrand(),shopLocation.latitude,shopLocation.longitude);
+            if(ll != null){
+                if(CalculationByDistance(shopLocation,ll) < distance){
+                    i++;
+                    setMarker(pro.getBrand(),shopLocation.latitude,shopLocation.longitude);
+                }
             }
         }
 
@@ -273,15 +267,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
                                     productItem.setPrice((String) myJson.get("price"));
                                     productItem.setStartDate((String) myJson.get("startDate"));
                                     productList.add(productItem);
-
-
-                                    System.out.println(i);
                                 }
-                                System.out.println("showGridData");
-
-
-                                System.out.println("showGridData######");
-
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -341,15 +327,13 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-
-
-                        distance = progress / 10;
-                        System.out.println(distance);
-                        System.out.println(distance);
-                        textView.setText(Integer.toString(distance)+" km");
-                        showShops();
-                        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,15-distance/3);
-                        mMap.animateCamera(update);
+                        if(ll != null){
+                            distance = progress / 10;
+                            textView.setText(Integer.toString(distance)+" km");
+                            showShops();
+                            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,15-distance/3);
+                            mMap.animateCamera(update);
+                        }
                     }
                 }
         );
