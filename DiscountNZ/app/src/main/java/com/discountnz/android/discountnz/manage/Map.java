@@ -2,6 +2,7 @@ package com.discountnz.android.discountnz.manage;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -11,7 +12,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -47,6 +51,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
+    TextView textView;
     SeekBar seekBar;
     int distance = 0;
 
@@ -88,6 +93,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         seekBar();
+        btnReturn();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -184,6 +190,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
 
     Marker marker;
     public void showShops(){
+        mMap.clear();
 
 
 //        for(int i = 0; i < productList.size();i++){
@@ -192,11 +199,15 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
 
 
 
+        int i = 0;
         for(Product pro : productList){
-            mMap.clear();
-            System.out.println(productList.size());
+
             LatLng shopLocation = new LatLng(Double.parseDouble(pro.getLatitude()),Double.parseDouble(pro.getLongitude()));
-            if(CalculationByDistance(shopLocation,ll)<distance){
+            System.out.println(shopLocation);
+            if(CalculationByDistance(shopLocation,ll) < distance){
+                i++;
+
+                System.out.println(i);
                 setMarker(pro.getBrand(),shopLocation.latitude,shopLocation.longitude);
             }
         }
@@ -222,7 +233,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
         double km = valueResult / 1;
         DecimalFormat newFormat = new DecimalFormat("####");
         int kmInDec = Integer.valueOf(newFormat.format(km));
-        double meter = valueResult * 1000;
+        double meter = valueResult % 1000;
         int meterInDec = Integer.valueOf(newFormat.format(meter));
         Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
                 + " Meter   " + meterInDec);
@@ -235,7 +246,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
         //get the request queue
         queue = getRequestQueue(getApplicationContext());
         //current response url
-        String url = "https://gist.githubusercontent.com/super1212/d0a3131282534ebe60b581b8a7f7be1f/raw/products.json";
+        String url = "https://gist.githubusercontent.com/super1212/82fe7cdbd3c4286c5bb5e98c7ee07c73/raw/products_Android.json";
         //use get method to get the json result
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -289,9 +300,9 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
 
 
     private void setMarker(String locality, double lat, double lng) {
-        if(marker != null){
-            marker.remove();
-        }
+//        if(marker != null){
+//            marker.remove();
+//        }
         MarkerOptions options = new MarkerOptions()
                 .title(locality)
                 .draggable(true)
@@ -300,8 +311,21 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
     }
 
 
+    private void btnReturn(){
+        Button btnReturn = (Button)findViewById(R.id.btnReturn);
+        btnReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent back = new Intent();
+                setResult(RESULT_OK,back);
+                finish();
+            }
+        });
+    }
+
     private void seekBar(){
         seekBar = (SeekBar) findViewById(R.id.seekBar1);
+        textView = findViewById(R.id.textView);
         seekBar.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int progress;
@@ -317,8 +341,12 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, GoogleA
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
+
+
                         distance = progress / 10;
                         System.out.println(distance);
+                        System.out.println(distance);
+                        textView.setText(Integer.toString(distance)+" km");
                         showShops();
                         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,15-distance/3);
                         mMap.animateCamera(update);

@@ -43,7 +43,7 @@ public class TableManage {
                 (width/2-2), width/2);
 //            tableLayoutParams.weight = 7;
         tableLayoutParams.width = width/2;
-        tableLayoutParams.height = width/2 + 600;
+        tableLayoutParams.height = width/2 + 700;
         tableLayout.setLayoutParams(tableLayoutParams);
 
 
@@ -75,7 +75,7 @@ public class TableManage {
 
         LinearLayout subLinearLayout2 = new LinearLayout(context);
         AutoSplitTextView textView2 = new AutoSplitTextView(context);
-        textView2.setLayoutParams(new ViewGroup.LayoutParams(width/2, 200));
+        textView2.setLayoutParams(new ViewGroup.LayoutParams(width/2, 300));
         textView2.setText(product.getDetails());
         textView2.setTextColor(Color.BLUE);
         subLinearLayout2.addView(textView2);
@@ -94,7 +94,7 @@ public class TableManage {
         LinearLayout lineLayout = new LinearLayout(context);
         final ImageView imageView = new ImageView(context);
 
-        ViewGroup.LayoutParams imageViewparams = new ViewGroup.LayoutParams(400, 400);
+        ViewGroup.LayoutParams imageViewparams = new ViewGroup.LayoutParams(400, 450);
         imageView.setLayoutParams(imageViewparams);
 
         imageView.setBackgroundColor(Color.rgb(255,255,255));
@@ -113,10 +113,10 @@ public class TableManage {
 
         TableLayout tableLayout = new TableLayout(context);
         TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
-                (width - 400), 400);
+                (width - 400), 450);
 //            tableLayoutParams.weight = 7;
         tableLayoutParams.width = width - 400;
-        tableLayoutParams.height = 400;
+        tableLayoutParams.height = 450;
         tableLayoutParams.setMargins(1,0,1,1);
         tableLayout.setLayoutParams(tableLayoutParams);
         LinearLayout subLinearLayout1 = new LinearLayout(context);
@@ -132,7 +132,7 @@ public class TableManage {
 //            subTableRow2.setLayoutParams(new TableRow.LayoutParams(
 //                    width - 400, 100));
         AutoSplitTextView textView2 = new AutoSplitTextView(context);
-        textView2.setLayoutParams(new ViewGroup.LayoutParams(width - 400, 100));
+        textView2.setLayoutParams(new ViewGroup.LayoutParams(width - 400, 150));
         textView2.setText(product.getDetails());
         textView2.setTextColor(Color.BLUE);
         subLinearLayout2.addView(textView2);

@@ -1,5 +1,6 @@
 package com.discountnz.android.discountnz;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,8 +26,9 @@ import com.discountnz.android.discountnz.model.Product;
 import com.discountnz.android.discountnz.util.ImageHandler;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.io.Serializable;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,22 +39,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static android.R.attr.end;
-import static android.R.attr.value;
 
 
 public class MainActivity extends AppCompatActivity {
-    List categoryList = new ArrayList<String>();
-    List providerList = new ArrayList<String>();
+    List categoryList = new ArrayList<String>(); //category list
+    List providerList = new ArrayList<String>(); // provider(brand) list
     List dateList = Arrays.asList("Today", "Tomorrow", "This Week", "Next Week");
-    List<Product> productList = new ArrayList<Product>();
-    List<Product> allProductList = new ArrayList<Product>();
+    List<Product> productList = new ArrayList<Product>(); //current product list
+    List<Product> allProductList = new ArrayList<Product>(); // all products list
     int showGridType = 0;//0:list table, 1: grid Table
     RequestQueue queue = null; //request queue
-    PolylineOptions polylineOptions = null;
-    ImageHandler handler = new ImageHandler();
     TableManage tableManage = new TableManage();
 
+    //
     View.OnClickListener lineOnClickListener = new View.OnClickListener(){
         @Override
         public void onClick(View arg0) {
@@ -79,7 +78,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
-
+    View.OnClickListener filterButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View arg0) {
+            Intent filter = new Intent(MainActivity.this, FilterPage.class);
+            Bundle cat = new Bundle();
+            cat.putSerializable("category", (Serializable) categoryList);
+            cat.putSerializable("brand", (Serializable) providerList);
+            cat.putSerializable("date", (Serializable) dateList);
+            filter.putExtra("categoryBundle", cat);
+            filter.putExtra("brandBundle", cat);
+            filter.putExtra("dateBundle", cat);
+            startActivityForResult(filter,100);
+        }
+    };
     //get requestQueue and keep the only one object in this class
     public RequestQueue getRequestQueue(Context context) {
         if (queue == null) {
@@ -87,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return queue;
     }
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -98,24 +109,33 @@ public class MainActivity extends AppCompatActivity {
         //initial map button
         initMapButton();
 
-        Intent intent = getIntent();
-        String category = intent.getStringExtra("category");
-        String brand = intent.getStringExtra("brand");
-        String dateStr = intent.getStringExtra("date");
-        boolean isFilter = intent.getBooleanExtra("isFilter", false);
 
+        Button filterButton = (Button) findViewById(R.id.button2);
+        filterButton.setOnClickListener(filterButtonListener);
 
         Button viewButton = (Button) findViewById(R.id.viewButton);
         viewButton.setOnClickListener(imageButtonListener);
         //check is it from filter page go back
-        if(isFilter){
-            doFilter(category, brand, dateStr);
-            showGridData();
-        }else{
-            getProductsInfo();
-        }
+
+        getProductsInfo();
 //        showGridData();
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(resultCode == RESULT_OK){
+            String category = data.getStringExtra("category");
+            String brand = data.getStringExtra("brand");
+            String dateStr = data.getStringExtra("date");
+            boolean isFilter = data.getBooleanExtra("isFilter", false);
+            if(isFilter){
+                this.doFilter(category, brand, dateStr);
+                showGridData();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
     public void initMapButton(){
         Button mapButton = (Button)findViewById(R.id.button3);
@@ -131,43 +151,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void doFilter(String category, String brand, String dateStr){
         productList = new ArrayList<Product>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
         for(Product proItem : allProductList){
-            if(!category.isEmpty() && !proItem.getCategory().equals(category)){
+            if((category != null  && !category.isEmpty()) && !proItem.getCategory().equals(category)){
                 continue;
             }
-            if(!brand.isEmpty() && !proItem.getBrand().equals(brand)){
+            if((brand != null && !brand.isEmpty()) && !proItem.getBrand().equals(brand)){
                 continue;
             }
-            LocalDate todayDate = LocalDate.now();
-            DateTimeFormatter myFormatter = DateTimeFormatter.ofPattern("YYYY-MM-DD");
-            LocalDate startDate = LocalDate.parse(proItem.getStartDate(), myFormatter);
-            LocalDate endDate = LocalDate.parse(proItem.getEndDate(), myFormatter);
+
+            Date todayDate = new Date();
+            String todayStr = sdf.format(todayDate);
+            String startDate = proItem.getStartDate();
+            String endDate = proItem.getEndDate();
 
             if("Today".equals(dateStr)){
-                if(todayDate.isAfter(startDate) || todayDate.isBefore(endDate)){
+                if(todayStr.compareTo(startDate) < 0 || todayStr.compareTo(endDate) > 0){
                     continue;
                 }
             }
 
             if("Tomorrow".equals(dateStr)){
-                if(todayDate.plusDays(1).isAfter(startDate) || todayDate.plusDays(1).isBefore(endDate)){
+                Date tomorrow = addDay(todayDate, 1);
+                String tomorrowStr = sdf.format(tomorrow);
+                if(tomorrowStr.compareTo(startDate) < 0 || tomorrowStr.compareTo(endDate) > 0){
                     continue;
                 }
             }
             if("This Week".equals(dateStr)){
-                LocalDate lastday = todayDate.plusDays(7);
-                if(todayDate.isAfter(endDate)|| lastday.isBefore(startDate)){
+                Date after7day = addDay(todayDate, 7);
+                String after7dayStr = sdf.format(after7day);
+                if(after7dayStr.compareTo(startDate) < 0 || todayStr.compareTo(endDate) > 0){
                     continue;
                 }
             }
 
             if("Next Week".equals(dateStr)){
-                LocalDate fromDate = todayDate.plusDays(7);
-                LocalDate lastday = todayDate.plusDays(14);
-                if(fromDate.isAfter(endDate)|| lastday.isBefore(startDate)){
+                Date fromDay = addDay(todayDate, 7);
+                String fromDayStr = sdf.format(fromDay);
+
+                Date endDay = addDay(todayDate, 14);
+                String endDayStr = sdf.format(endDay);
+                if(endDayStr.compareTo(startDate) < 0 || fromDayStr.compareTo(endDate) > 0){
                     continue;
                 }
             }
@@ -175,6 +203,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private Date addDay(Date date, int days){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DAY_OF_MONTH, days);
+        Date myDate = c.getTime();
+        return myDate;
+    }
     /**
      * Get the products information from my online json
      * This function get product information from online json
@@ -288,9 +323,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 tableLayout.setLayoutParams(tableLayoutParams);
                 tableLayout.setBackgroundColor(Color.rgb(255,255,255));
+                tableLayout.setId(row);
+                tableLayout.setOnClickListener(lineOnClickListener);
+
                 lineLayout.addView(tableLayout);
-                lineLayout.setId(row);
-                lineLayout.setOnClickListener(lineOnClickListener);
                 row++;
             }
             listTable.addView(lineLayout);

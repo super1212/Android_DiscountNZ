@@ -44,7 +44,7 @@
         <activity android:name=".ProductDetailsDisplay.InfoPage" />
         <activity android:name=".ProductAddressPage" android:label="@string/title_activity_product_address_page"></activity>
         <activity android:name=".manage.Map"></activity>
-
+        <activity android:name=".FilterPage" ></activity>
     </application>
 
 </manifest>
