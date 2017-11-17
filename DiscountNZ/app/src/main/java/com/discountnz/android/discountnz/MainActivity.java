@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //initial map button
+        initMapButton();
 
         Intent intent = getIntent();
         String category = intent.getStringExtra("category");
@@ -115,6 +117,19 @@ public class MainActivity extends AppCompatActivity {
 //        showGridData();
 
     }
+    public void initMapButton(){
+        Button mapButton = (Button)findViewById(R.id.button3);
+        mapButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent map = new Intent(MainActivity.this, com.discountnz.android.discountnz.manage.Map.class);
+
+                startActivity(map);
+
+            }
+        });
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void doFilter(String category, String brand, String dateStr){
