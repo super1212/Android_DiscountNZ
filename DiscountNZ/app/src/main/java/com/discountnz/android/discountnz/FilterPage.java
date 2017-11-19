@@ -34,7 +34,7 @@ public class FilterPage extends AppCompatActivity {
     private String sBrand;
     private String sCategory;
     private String sDate;
-    private Boolean isFilter = false;
+    private Boolean isFilter = true;
 
     ImageHandler handler = new ImageHandler();
     @Override

@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    //callback function show filter result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if(resultCode == RESULT_OK){
@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+    //init mapButton
     public void initMapButton(){
         Button mapButton = (Button)findViewById(R.id.button3);
         mapButton.setOnClickListener(new View.OnClickListener(){
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    //filter product
     private void doFilter(String category, String brand, String dateStr){
         productList = new ArrayList<Product>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -202,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
             productList.add(proItem);
         }
     }
-
+    //add day to date
     private Date addDay(Date date, int days){
         Calendar c = Calendar.getInstance();
         c.setTime(date);
